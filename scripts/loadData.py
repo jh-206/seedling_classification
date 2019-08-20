@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import cv2
 import os
 import glob
+from sklearn.model_selection import train_test_split
+
 
 # If not using spyder project, set directory manually
 if False: 
@@ -17,7 +19,7 @@ if False:
 
 
 datadir = os.getcwd() + "/data/raw/v2-plant-seedlings-dataset"
-os.path.isfile(datadir + "/Black-grass/1.png")
+#os.path.isfile(datadir + "/Black-grass/1.png")
 
 seed_class = os.listdir(datadir)
 seed_class2 = seed_class[0:2]
@@ -27,8 +29,9 @@ for sc in seed_class2:
               if fn.endswith('.png')]
     nfiles += len(files)
 
-tr_img_ls = [None] * nfiles # list of image data
-tr_cl_ls = [None] * nfiles # list of class labels
+img_ls = [None] * nfiles # list of image data
+cl_ls = [None] * nfiles # list of class labels
+
 
 i = 0
 for sc in seed_class2:
@@ -36,38 +39,41 @@ for sc in seed_class2:
               if fn.endswith('.png')]
     for f in files:
         img_temp = cv2.imread(f)
-        tr_cl_ls[i] = sc
+        cl_ls[i] = sc
         # Clean image
-        tr_img_ls[i] = img_temp
+        img_ls[i] = img_temp
         i = i+1
-
-
     
-    
-
-
-
-#img = cv2.imread(datadir + "/Black-grass/1.png")
-#imgb = cv2.imread(datadir + "/Black-grass/1.png", cv2.IMREAD_GRAYSCALE)
-#
-img = tr_img_ls[100]
-cv2.imshow("image", img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-#
-#plt.imshow(img, cmap = "gray")
-
-
-
-
 # =============================================================================
-# Gaussian Blur
+# Clean images
 # =============================================================================
 
-img_blur = cv2.GaussianBlur(img, (5, 5), 0)
+img_ls = [cv2.GaussianBlur(img, (5, 5), 0) for img in img_ls] 
 
-cv2.imshow("image", img_blur)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+
+#cv2.imshow("image", tr_img_ls[20])
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
+# =============================================================================
+# Partition Train, Test, Validation
+# =============================================================================
+
+seed = 5
+split = (.8, .1, .1)
+
+len(cl_ls)
+cl = np.asarray(cl_ls)
+
+img_tr,img_te,cl_tr,cl_te = train_test_split(
+        img_ls,cl_ls,test_size=0.1,random_state=seed,stratify=cl_ls)
+
+img_tr, img_val, cl_tr, cl_val= train_test_split(
+    img_tr, cl_tr, test_size=0.1, random_state=seed,stratify=cl_tr)
+
+
+
+
 
 
