@@ -1,4 +1,3 @@
 *.png
 *.zip
-/.spyproject/workspace.ini
 **/__pycache__
