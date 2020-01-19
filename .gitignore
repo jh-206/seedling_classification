@@ -1,3 +1,4 @@
 *.png
 *.zip
 **/__pycache__
+.Rproj.user
